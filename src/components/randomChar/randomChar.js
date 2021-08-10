@@ -1,23 +1,70 @@
 import React, {Component} from 'react';
 import './randomChar.css';
+import gotService from '../../services/gotService'
+import Spinner from '../spinner';
+import ErrorMessage from '../errorMessage';
 
 export default class RandomChar extends Component {
 
+    constructor() {
+        super();
+        this.updateChar();
+    }
+
+    gotService = new gotService();
     state = {
-        name: null,
-        gender: null,
-        born: null,
-        died: null,
-        culture: null
+        char: {},
+        loading: true
+    };
+
+    onCharLoaded = (char) => {
+        this.setState({
+            char,
+            loading: false,
+            error: false
+        })
+    }
+
+    onError = (err) => {
+        this.setState({
+            error: true,
+            loading: false
+        })
+    }
+
+    updateChar() {
+        // const id = Math.floor(Math.random()*140 + 25); // [25; 140]
+        const id = 13300000; // error checking 
+        this.gotService.getCharacter(id)
+            .then(this.onCharLoaded)
+            .catch(this.onError)
     }
 
     render() {
-        const {name, gender, born, died, culture} = this.state;
+        const { char, loading, error } = this.state;
 
+        const errorMessage = error ? <ErrorMessage/> : null;
+        const spinner = loading ? <Spinner/> : null;
+        const content = !(loading || error) ? <View char={char}/> : null; 
 
         return (
             <div className="random-block rounded">
-                <h4>Random Character: {name}</h4>
+                {errorMessage}
+                {spinner}
+                {content}
+            </div>
+        );
+        
+    }
+}
+
+// Local component to use spinner inside white-square
+
+const View = ({char}) => {
+    const {name, gender, born, died, culture} = char;
+    return (
+        <React.Fragment>
+            <h4>Random Character: {name}</h4>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex justify-content-between">
                         <span className="term">Gender </span>
@@ -36,7 +83,6 @@ export default class RandomChar extends Component {
                         <span>{culture}</span>
                     </li>
                 </ul>
-            </div>
-        );
-    }
+        </React.Fragment>
+    )
 }
