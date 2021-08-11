@@ -46,7 +46,7 @@ export default class GOTService {
     }
 
     _isEmpty(item) {
-        return item ? item : "none";
+        return item ? item : "sorry, no-data :(";
     }
 
     _transformCharacter(char) {
