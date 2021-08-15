@@ -5,12 +5,17 @@ import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
 export default class RandomChar extends Component {
-
+    // It is a very bad practice to make API request inside constructor
+    // It is better to request in Lifycycle Hooks
+    // 'cause at first constructor is called, mounting called
+    // after render, so if we work in constructor with some DOM elems, we may gonna use non-existing elements
+    // that can lead to an error
     constructor() {
         super();
         this.updateChar();
         this.timerID = setInterval(this.updateChar, 1500);
         clearInterval(this.timerID);
+        console.log('constructor');
     }
     // LifeCycle Hooks
     // componentDidMount() - component appeared in page
@@ -23,6 +28,14 @@ export default class RandomChar extends Component {
         char: {},
         loading: true
     };
+
+    componentDidMount() {
+        console.log('Mounting');
+    }
+
+    componentWillUnmount() {
+        console.log('UnMounting');
+    }
 
     onCharLoaded = (char) => {
         this.setState({
@@ -40,7 +53,6 @@ export default class RandomChar extends Component {
     }
 
     updateChar = () => {
-        console.log('update');
         const id = Math.floor(Math.random()*140 + 25); // [25; 140]
         // const id = 13300000; // error checking 
         this.gotService.getCharacter(id)
@@ -49,6 +61,7 @@ export default class RandomChar extends Component {
     }
 
     render() {
+        console.log('render');
         const { char, loading, error } = this.state;
 
         const errorMessage = error ? <ErrorMessage/> : null;
