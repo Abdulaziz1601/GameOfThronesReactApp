@@ -10,13 +10,9 @@ export default class RandomChar extends Component {
     // 'cause at first constructor is called, mounting called
     // after render, so if we work in constructor with some DOM elems, we may gonna use non-existing elements
     // that can lead to an error
-    constructor() {
-        super();
-        this.updateChar();
-        this.timerID = setInterval(this.updateChar, 1500);
-        clearInterval(this.timerID);
-        console.log('constructor');
-    }
+   
+    // So, we don't need constructor
+
     // LifeCycle Hooks
     // componentDidMount() - component appeared in page
     // componentDidUpdate() - component was update, newProps or setState
@@ -30,11 +26,13 @@ export default class RandomChar extends Component {
     };
 
     componentDidMount() {
-        console.log('Mounting');
+        this.updateChar();
+        this.timerID = setInterval(this.updateChar, 1500);
     }
 
     componentWillUnmount() {
-        console.log('UnMounting');
+        // Will be called right before DOM structure will be deleted
+        clearInterval(this.timerID);
     }
 
     onCharLoaded = (char) => {

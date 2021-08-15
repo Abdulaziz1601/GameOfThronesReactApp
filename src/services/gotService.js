@@ -49,7 +49,7 @@ export default class GOTService {
         return item ? item : "sorry, no-data :(";
     }
 
-    _transformCharacter(char) {
+    _transformCharacter = (char) => {
         return {
             name: this._isEmpty(char.name),
             gender: this._isEmpty(char.gender),
@@ -59,7 +59,7 @@ export default class GOTService {
         }
     }
 
-    _transformHouse(house) {
+    _transformHouse = (house) => {
         return {
             name: this._isEmpty(house.name),
             region: this._isEmpty(house.region),
@@ -70,7 +70,7 @@ export default class GOTService {
         }
     }
 
-    _transformBook(book) {
+    _transformBook = (book) => {
         return {
             name: this._isEmpty(book.name),
             numberOfPages: this._isEmpty(book.numberOfPages),

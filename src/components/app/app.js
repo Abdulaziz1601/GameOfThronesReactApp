@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Col, Row, Container, Button} from 'reactstrap';
+import './app.css';
 import Header from '../header';
 import RandomChar from '../randomChar';
 import ItemList from '../itemList';
@@ -10,8 +11,17 @@ import ErrorMessage from '../errorMessage';
 export default class App extends Component {
     state = {
         showRandomChar: true,
+        selectedChar: 130,
         error: false
     };
+
+    componentDidCatch() {
+        console.log('error');
+        this.setState({
+            error: true
+        })
+    }
+
 
     toggleRandomChar = () => {
         this.setState((prevState) => {
@@ -19,16 +29,23 @@ export default class App extends Component {
                 showRandomChar: !prevState.showRandomChar
             }
         });
+    };
+
+    onCharSelected = (id) => {
+        this.setState({
+            selectedChar: id
+        })
     }
 
+
     render() {
-        const {error, showRandomChar: isVisible} = this.state;
+        const {error, showRandomChar} = this.state;
 
         if (error) {
             return <ErrorMessage/>;
         }
         
-        const char = isVisible ? <RandomChar/>: null ;
+        const char = showRandomChar ? <RandomChar/>: null ;
         
         return (
             <div> 
@@ -48,10 +65,10 @@ export default class App extends Component {
                     </Row>
                     <Row>
                         <Col md='6'>
-                            <ItemList />
+                            <ItemList onCharSelected={this.onCharSelected} />
                         </Col>
                         <Col md='6'>
-                            <CharDetails />
+                            <CharDetails charId={this.state.selectedChar}/>
                         </Col>
                     </Row>
                 </Container>
