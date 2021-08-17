@@ -22,8 +22,11 @@ export default class GOTService {
     async getCharacter(id) {
         const character = await this.getResource(`/characters/${id}`); // await returns us value, that was waited from promise
         return this._transformCharacter(character)
-
     }
+
+    // async getCharacterKey(id) {
+
+    // }
 
     async getAllHouses() {
         const res = await this.getResource("/houses/");
@@ -55,8 +58,14 @@ export default class GOTService {
             gender: this._isEmpty(char.gender),
             born: this._isEmpty(char.born),
             died: this._isEmpty(char.died),
-            culture: this._isEmpty(char.culture)
+            culture: this._isEmpty(char.culture),
+            id: this.getId(char.url)
         }
+    }   
+
+    getId(url) {
+        // console.log(url.match(/\/([0-9]+)/)[1]);
+        return url.match(/\/([0-9]+)/)[1];
     }
 
     _transformHouse = (house) => {
@@ -66,7 +75,8 @@ export default class GOTService {
             words: this._isEmpty(house.words),
             titles: this._isEmpty(house.titles),
             overlord: this._isEmpty(house.overlord),
-            ancestralWeapons: this._isEmpty(house.ancestralWeapons)
+            ancestralWeapons: this._isEmpty(house.ancestralWeapons),
+            id: this.getId(house.url)
         }
     }
 
@@ -75,7 +85,8 @@ export default class GOTService {
             name: this._isEmpty(book.name),
             numberOfPages: this._isEmpty(book.numberOfPages),
             publisher: this._isEmpty(book.publisher),
-            released: this._isEmpty(book.released)
+            released: this._isEmpty(book.released),
+            id: this.getId(book.url)
         }
     }
 }

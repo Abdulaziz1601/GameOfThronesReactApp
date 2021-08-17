@@ -3,6 +3,7 @@ import './itemList.css';
 import gotService from '../../services/gotService'
 import Spinner from '../spinner';
 import styled from 'styled-components';
+import ErrorMessage from '../errorMessage';
 
 const ListItem = styled.li`
 :hover {
@@ -13,30 +14,56 @@ export default class ItemList extends Component {
     gotService = new gotService();
     
     state = {
-        charList: null
+        charList: null,
+        error: false
     }
 
     componentDidMount() {
         this.gotService.getAllCharacters()
-            .then((charList) => this.setState({
-                charList
-            }));
+            .then((charList) => {
+                this.setState({
+                    charList,
+                    error: false
+                });
+            })
+            .catch(() => {this.onError()});
     }
+
+    componentDidCatch() {
+        this.setState({
+            error: true,
+            charList: null
+        });
+    }
+
+    onError(status) {
+        this.setState({
+            error: true,
+            charList: null
+        });
+    }
+
     renderItems(arr) {
-        return arr.map((item, i) => {
+        return arr.map((item) => {
+            const {id, name} = item;
             return (
                 <ListItem 
-                    key={i}
+                    key={id}    
                     className="list-group-item"
-                    onClick={() => this.props.onCharSelected(41 + i)}
+                    onClick={() => this.props.onCharSelected(id)}
                     >
-                    {item.name}
+                    {name}
                 </ListItem>
             )
         })
     }
     render() {
-        const {charList} = this.state;
+        const {charList, error} = this.state;
+
+        if(error) {
+            return <ErrorMessage />
+        }
+
         if(!charList) {
             return <Spinner/>
         }

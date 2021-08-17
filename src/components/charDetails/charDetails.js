@@ -1,12 +1,16 @@
 import React, {Component} from 'react';
 import './charDetails.css';
 import GOTService from '../../services/gotService';
+import Spinner from '../spinner';
+import ErrorMessage from '../errorMessage';
 export default class CharDetails extends Component {
 
     gotService = new GOTService();
 
     state = {
-        char: null
+        char: null,
+        loading: false,
+        error: false
     }
 
     componentDidMount() {
@@ -19,26 +23,54 @@ export default class CharDetails extends Component {
         }
     }
 
+    onCharDetailsLoaded = (char) => {
+        this.setState({
+            loading: false,
+            char
+        })
+    }
+
     updateChar() {
         const {charId} = this.props;
+        
         if(!charId) {
             return;
         }
 
-        this.gotService.getCharacter(charId)
-            .then((char) => this.setState({char}));
+        this.setState({
+            loading: true
+        });
 
-        this.foo.bar=0;
+        this.gotService.getCharacter(charId)
+            .then( this.onCharDetailsLoaded )
+            .catch( () => this.onError );
+    }
+
+    onError(){
+        this.setState({
+            char: null,
+            error: true
+        })
     }
 
     
 
     render() {
-        if(!this.state.char) {
-            return <span className="select-error">Please select a character</span>;
+        if(!this.state.char && this.state.error) {
+            return <ErrorMessage/>
+        } else if (!this.state.char) {
+            return <span className="select-error">Please select a character</span>
         }
 
         const {name, gender, born, died, culture} = this.state.char;
+
+        if(this.state.loading) {      
+            return (
+                <div className="char-details rounded">
+                    <Spinner/>
+                </div>
+            )
+        }
 
         return (
             <div className="char-details rounded">
