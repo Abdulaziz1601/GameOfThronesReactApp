@@ -36,7 +36,7 @@ export default class ItemList extends Component {
         });
     }
 
-    onError(status) {
+    onError() {
         this.setState({
             error: true,
             charList: null
